@@ -91,6 +91,7 @@ class FileManager(object):
             self.db_url = [dbstring]
 
         db = []
+        dbs = []
         for s in self.db_url:
             server_uri, db_name, docid = parse_uri(s)
  
@@ -101,8 +102,18 @@ class FileManager(object):
                 _db = couchdb_server.create(db_name)
             except: # db already exist
                 _db = couchdb_server[db_name]
+
+            dbs.append((server_uri, db_name))
             db.append(_db)
         self.db = db
+        self.dbs = dbs
+
+    def _db(self):
+        for db in self.dbs:
+            couchdb_server = _server(db[0])
+            yield couchdb_server[db[1]]
+
+
 
     @classmethod
     def generate_app(cls, app_dir):
@@ -441,7 +452,7 @@ class FileManager(object):
         
         # detect attachments to be removed and keep
         # only new version attachments to update.
-        for db in self.db:
+        for db in self._db():
             design = db[docid]
             metadata = design.get('couchapp', {})
             attachments = _attachments.copy()
