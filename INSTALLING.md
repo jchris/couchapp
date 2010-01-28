@@ -4,7 +4,7 @@
 
 If `sudo easy_install couchapp` doesn't work for you, you can install from source.
 
-    git clone git://github.com/jchris/couchapp.git
+    git clone git://github.com/couchapp/couchapp.git
     cd couchapp
     sudo python setup.py install
 
